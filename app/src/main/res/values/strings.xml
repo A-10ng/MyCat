@@ -1,0 +1,8 @@
+<resources>
+    <string name="appName">MyCat</string>
+    <string name="activity_main_growthRecord">成长记录</string>
+    <string name="checkMoreRecord">查看更多记录</string>
+    <string name="spd"/>
+    <string name="original_y"/>
+    <string name="isUp"/>
+</resources>
