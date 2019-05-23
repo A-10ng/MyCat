@@ -32,11 +32,20 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
-    implementation files('libs/com.mysql.jdbc.Driver.jar')
+
+    //网络请求框架
     implementation("com.squareup.okhttp3:okhttp:3.14.1")
+
+    //json格式解析框架
     implementation 'com.google.code.gson:gson:2.8.5'
+
+    //上拉刷新，下拉加载更多框架
     implementation 'com.scwang.smartrefresh:SmartRefreshLayout:1.1.0-alpha-25'
     implementation 'com.scwang.smartrefresh:SmartRefreshHeader:1.1.0-alpha-25'
+
+    //GIF动图加载框架
     implementation 'pl.droidsonroids.gif:android-gif-drawable:1.2.16'
-    implementation 'com.github.clans:fab:1.6.4'
+
+    //滚动控件
+    implementation 'com.android.support:recyclerview-v7:28.0.0'
 }

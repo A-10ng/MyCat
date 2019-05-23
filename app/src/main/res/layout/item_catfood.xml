@@ -1,22 +1,77 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/linearLayout"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:gravity="center">
-    <Button
-        android:id="@+id/btn_bg"
-        android:layout_width="35dp"
-        android:layout_height="35dp"
-        android:background="@drawable/catfood">
-    </Button>
-    <TextView
-        android:id="@+id/tv_water"
-        android:textColor="@android:color/black"
+    android:layout_width="100dp"
+    android:layout_height="100dp">
+
+    <LinearLayout
+        android:id="@+id/linearLayout_middle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:hint="4"
-        android:textSize="13dp"/>
-</LinearLayout>
+        android:orientation="vertical"
+        android:gravity="center"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:visibility="gone">
+        <TextView
+            android:id="@+id/tv_bg_middle"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:background="@drawable/ncheck">
+        </TextView>
+        <TextView
+            android:id="@+id/tv_water_middle"
+            android:textColor="@android:color/black"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="13dp"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/linearLayout_bottom"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:visibility="gone">
+        <TextView
+            android:id="@+id/tv_bg_bottom"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:background="@drawable/ycheck">
+        </TextView>
+        <TextView
+            android:id="@+id/tv_water_bottom"
+            android:textColor="@android:color/black"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="13dp"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/linearLayout_top"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true">
+
+        <TextView
+            android:id="@+id/tv_bg_top"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:background="@drawable/catfood">
+        </TextView>
+        <TextView
+            android:id="@+id/tv_water_top"
+            android:textColor="@android:color/black"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+            android:textSize="13dp"/>
+    </LinearLayout>
+
+</RelativeLayout>

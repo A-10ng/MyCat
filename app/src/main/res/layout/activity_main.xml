@@ -1,17 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.scwang.smartrefresh.layout.SmartRefreshLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/refresh_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    app:srlHeaderHeight="100dp"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    app:srlHeaderHeight="75dp">
 
     <pl.droidsonroids.gif.GifImageView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:src="@drawable/pull_to_refresh"
-        android:scaleType="centerCrop"/>
+        android:scaleType="centerCrop"
+        android:src="@drawable/pull_to_refresh"/>
+
     <ScrollView
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
@@ -90,112 +91,50 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:background="@drawable/style_layout_background">
+                android:background="@drawable/style_layout_background"
+                android:orientation="vertical">
 
                 <TextView
                     android:id="@+id/tv_growthRecord"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/black"
-                    android:text="@string/activity_main_growthRecord"
                     android:layout_marginLeft="20dp"
                     android:layout_marginTop="10dp"
+                    android:text="@string/activity_main_growthRecord"
+                    android:textColor="@color/black"
                     android:textSize="18sp"/>
-                <RelativeLayout
+
+                <LinearLayout
+                    android:id="@+id/ll_growthRecord"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@color/white"
                     android:layout_marginLeft="15dp"
+                    android:layout_marginTop="10dp"
                     android:layout_marginRight="15dp"
-                    android:layout_marginTop="10dp">
+                    android:background="@color/white"
+                    android:orientation="vertical">
 
-                    <TextView
-                        android:text="完成健身，喂养猫粮50g"
+                    <LinearLayout
+                        android:id="@+id/ll_checkMoreRecord"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_alignParentLeft="true"
-                        android:textColor="@color/black"
-                        android:id="@+id/tv_record1"
-                        android:layout_marginTop="10dp"
-                        android:layout_marginLeft="10dp"
-                        android:ellipsize="end"
-                        android:maxLength="18"
-                        android:textSize="16sp"/>
+                        android:gravity="center_horizontal"
+                        android:layout_marginTop="20dp"
+                        android:layout_marginBottom="20dp">
 
-                    <TextView
-                        android:text="完成学习，喂养猫粮50g"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_below="@+id/tv_record2"
-                        android:textColor="@color/black"
-                        android:layout_alignParentLeft="true"
-                        android:textSize="16sp"
-                        android:ellipsize="end"
-                        android:maxLength="18"
-                        android:layout_marginTop="10dp"
-                        android:layout_marginLeft="10dp"
-                        android:id="@+id/tv_record3"/>
+                        <TextView
+                            android:id="@+id/tv_checkRecord"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_horizontal"
+                            android:text="@string/checkMoreRecord"
+                            android:textColor="@color/black"
+                            android:textSize="19sp"/>
+                    </LinearLayout>
 
-                    <TextView
-                        android:id="@+id/tv_date1"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentRight="true"
-                        android:textSize="16sp"
-                        android:textColor="#c2bdbd"
-                        android:text="一小时前"
-                        android:layout_marginTop="10dp"
-                        android:layout_marginRight="10dp"/>
-                    <TextView
-                        android:id="@+id/tv_date2"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_below="@+id/tv_date1"
-                        android:layout_marginTop="10dp"
-                        android:textSize="16sp"
-                        android:layout_marginRight="10dp"
-                        android:layout_alignParentRight="true"
-                        android:textColor="#c2bdbd"
-                        android:text="三天前"/>
-                    <TextView
-                        android:id="@+id/tv_date3"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_below="@+id/tv_date2"
-                        android:layout_alignParentRight="true"
-                        android:layout_marginTop="10dp"
-                        android:layout_marginRight="10dp"
-                        android:textSize="16sp"
-                        android:textColor="#c2bdbd"
-                        android:text="三天前"/>
 
-                    <TextView
-                        android:text="@string/checkMoreRecord"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/tv_checkRecord"
-                        android:layout_centerVertical="true"
-                        android:layout_centerHorizontal="true"
-                        android:layout_below="@+id/tv_record3"
-                        android:textSize="18sp"
-                        android:textColor="@color/black"
-                        android:layout_marginTop="30dp"/>
 
-                    <TextView
-                        android:text="完成跑步，喂养猫粮50g"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:textColor="@color/black"
-                        android:id="@+id/tv_record2"
-                        android:textSize="16sp"
-                        android:ellipsize="end"
-                        android:maxLength="18"
-                        android:layout_marginLeft="10dp"
-                        android:layout_alignBaseline="@+id/tv_date2"
-                        android:layout_alignBottom="@+id/tv_date2"
-                        android:layout_alignParentEnd="true"/>
-                </RelativeLayout>
+                </LinearLayout>
             </LinearLayout>
         </LinearLayout>
     </ScrollView>

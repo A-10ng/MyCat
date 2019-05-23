@@ -5,4 +5,5 @@
     <string name="spd"/>
     <string name="original_y"/>
     <string name="isUp"/>
+    <string name="cancel_checkItem">您真的要删除该打卡项吗？</string>
 </resources>

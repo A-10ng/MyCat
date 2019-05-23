@@ -21,12 +21,12 @@ public class HttpUtils {
 
     private static OkHttpClient client = new OkHttpClient();
 
-    public static void sendHttpRequest(String address, Callback callback){
-        Request request = new Request.Builder()
-                .url(address)
-                .build();
-        client.newCall(request).enqueue(callback);
-    }
+//    public static void sendHttpRequest(String address, Callback callback){
+//        Request request = new Request.Builder()
+//                .url(address)
+//                .build();
+//        client.newCall(request).enqueue(callback);
+//    }
 
     public static List<Check> getCheckInfo() {
         Request request = new Request.Builder()
@@ -67,5 +67,57 @@ public class HttpUtils {
             Log.i("this", "isInsertSuccess:false ");
             return false;
         }
+    }
+
+    public static boolean cancelCheckItem(String checkItem) throws IOException {
+        RequestBody requestBody = new FormBody.Builder()
+                .add("phone",MyApp.getCurUserPhone())
+                .add("checkItem",checkItem)
+                .build();
+        Request request = new Request.Builder()
+                .url(MyApp.SERVER_URL+"deleteCheckItem")
+                .post(requestBody)
+                .build();
+        Response response = client.newCall(request).execute();
+        String res = response.body().string().trim();
+        if (res == "1" || res.equals("1")){
+            return true;
+        }else {
+            return false;
+        }
+    }
+
+    public static boolean finishCheckItem(String checkItem,String date) throws IOException {
+        RequestBody requestBody = new FormBody.Builder()
+                .add("phone",MyApp.getCurUserPhone())
+                .add("checkItem",checkItem)
+                .add("date",date)
+                .build();
+        Request request = new Request.Builder()
+                .url(MyApp.SERVER_URL+"updateCheckItem")
+                .post(requestBody)
+                .build();
+        Response response = client.newCall(request).execute();
+        String res = response.body().string().trim();
+        if (res == "1" || res.equals("1")){
+            return true;
+        }else {
+            return false;
+        }
+    }
+
+    public static List<Check> getGrowthRecord() throws IOException {
+        RequestBody body = new FormBody.Builder()
+                .add("phone",MyApp.getCurUserPhone())
+                .add("state","1")
+                .build();
+        Request request = new Request.Builder()
+                .post(body)
+                .url(MyApp.SERVER_URL+"findCheck")
+                .build();
+        Response response = client.newCall(request).execute();
+        String data = response.body().string();
+        List<Check> growthRecordList = getList(data,new TypeToken<List<Check>>() {}.getType());
+        return growthRecordList;
     }
 }
