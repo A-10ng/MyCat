@@ -1,21 +1,23 @@
 package top.longsh1z.www.mycat.utils;
 
-import android.widget.TextView;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 import java.util.TimeZone;
 
 public class CalendarUtils {
 
-    private static Map CurTimeInfor(){
-        Calendar calendar = Calendar.getInstance();
+    //获取当前时间的工作日数量，实时年份，实时月份，自然日数量，当前月所包含的周数，当前月所包含的天数
+    public static Map CurTimeInfor(){
+        Calendar calendar = Calendar.getInstance(Locale.CHINA);
         Map<Object, Integer> map = new HashMap<>();
         int workDays = 0;
+        map.put("CurDate",calendar.get(Calendar.DATE));
         int days = calendar.getActualMaximum(Calendar.DAY_OF_MONTH);
         try {
             calendar.set(Calendar.DATE, 1);//从每月1号开始
@@ -26,15 +28,31 @@ public class CalendarUtils {
                 }
                 calendar.add(Calendar.DATE, 1);
             }
-            map.put("workDaysAmount", workDays);//工作日
+            map.put("workDaysAmount", workDays);//工作日数量
             map.put("year", calendar.get(Calendar.YEAR));//实时年份
             map.put("month", calendar.get(Calendar.MONTH));//实时月份
-            map.put("daysAmount", days);//自然日
-            map.put("weeksAmount", calendar.getActualMaximum(Calendar.WEEK_OF_MONTH));//周
+            map.put("daysAmount", days);//自然日数量
+            map.put("weeksAmount", calendar.getActualMaximum(Calendar.WEEK_OF_MONTH));//当前月所包含的周数
         } catch (Exception e) {
             e.printStackTrace();
         }
         return map;
+    }
+
+    public static String getCurMonthThroDate(String date) throws ParseException {
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        simpleDateFormat.setTimeZone(TimeZone.getTimeZone("GMT+08"));
+        Calendar calendar1 = Calendar.getInstance();
+        calendar1.setTime(simpleDateFormat.parse(date));
+        return calendar1.get(Calendar.MONTH)+1+"";
+    }
+
+    public static int getCurDateThroDate(String date) throws ParseException {
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        simpleDateFormat.setTimeZone(TimeZone.getTimeZone("GMT+08"));
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(simpleDateFormat.parse(date));
+        return calendar.get(Calendar.DATE);
     }
 
     public static int getCurYearsDays() {

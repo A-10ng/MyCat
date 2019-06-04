@@ -1,4 +1,4 @@
-package top.longsh1z.www.mycat.model;
+package top.longsh1z.www.mycat.bean;
 
 public class User {
     private String phone;

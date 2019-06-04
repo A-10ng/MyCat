@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.NonNull;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -30,7 +29,7 @@ import java.util.TimeZone;
 import top.longsh1z.www.mycat.R;
 import top.longsh1z.www.mycat.adapter.CheckRecordAdapter;
 import top.longsh1z.www.mycat.bean.CheckRecordBean;
-import top.longsh1z.www.mycat.model.Check;
+import top.longsh1z.www.mycat.bean.Check;
 import top.longsh1z.www.mycat.utils.HttpUtils;
 
 public class MoreRecordActivity extends Activity {
@@ -107,7 +106,7 @@ public class MoreRecordActivity extends Activity {
             @Override
             public void run() {
                 try {
-                    recordList = HttpUtils.getGrowthRecord();
+                    recordList = HttpUtils.getGrowthRecord();             //网络请求
                     if (recordList == null || recordList.size() == 0) {
                         Log.i(TAG, "run: recordlist = 0");
                         runOnUiThread(new Runnable() {
@@ -126,33 +125,30 @@ public class MoreRecordActivity extends Activity {
                         });
                     } else {
                         Log.i(TAG, "run: recordlist != 0");
-                        AddDataToRecordList(0, 10, rv_dataList);
+                        AddDataToRecordList(0, 10, rv_dataList);           //上文说到的放数据进ArrayList
                         for (int i = 0; i < rv_dataList.size(); i++) {
                             Log.i(TAG, "run: recordlist != 0>>>>>"+rv_dataList.get(i));
                         }
                     }
-                    handler.sendEmptyMessage(1);
+                    handler.sendEmptyMessage(1);             //handler的sendMessage方法
                 } catch (IOException | ParseException e) {
                     e.printStackTrace();
                     Log.i(TAG, "run: 获取记录失败");
                 }
             }
         }).start();
+
     }
 
     private void initRecyclerView() {
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         mRecyclerView.setLayoutManager(layoutManager);
-        Log.i(TAG, "run: initRecyclerViewBefore>>>>>"+rv_dataList.size());
-        Log.i(TAG, "initRecyclerView: adapterbefore");
         MyAdapter = new CheckRecordAdapter(rv_dataList);
-        Log.i(TAG, "initRecyclerView: adapterafter");
-        Log.i(TAG, "run: initRecyclerViewBefore>>>>>"+rv_dataList.size());
         mRecyclerView.setAdapter(MyAdapter);
     }
 
     private void initSmartRefreshLayout() {
-        //mSmartRefreshLayout.setEnableRefresh(false);
+        mSmartRefreshLayout.setEnableRefresh(false);
 
         mSmartRefreshLayout.setOnLoadMoreListener(new OnLoadMoreListener() {
             @Override
@@ -170,7 +166,6 @@ public class MoreRecordActivity extends Activity {
                 }
             }
         });
-        //mSmartRefreshLayout.autoLoadMore();
     }
 
     private void AddDataToRecordList(int start, int end, List<Object> dataList) throws ParseException {

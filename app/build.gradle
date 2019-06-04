@@ -4,7 +4,7 @@ android {
     compileSdkVersion 28
     defaultConfig {
         applicationId "top.longsh1z.www.mycat"
-        minSdkVersion 19
+        minSdkVersion 21
         targetSdkVersion 28
         versionCode 1
         versionName "1.0"
@@ -48,4 +48,10 @@ dependencies {
 
     //滚动控件
     implementation 'com.android.support:recyclerview-v7:28.0.0'
+
+    //EventBus
+    implementation 'org.greenrobot:eventbus:3.0.0'
+
+    //HelloChart
+    implementation 'com.github.lecho:hellocharts-library:1.5.8@aar'
 }

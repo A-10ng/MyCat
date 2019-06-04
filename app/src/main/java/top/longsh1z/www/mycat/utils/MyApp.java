@@ -1,6 +1,7 @@
 package top.longsh1z.www.mycat.utils;
 
 import android.app.Application;
+import android.content.Context;
 import android.util.Log;
 
 import java.text.SimpleDateFormat;
@@ -14,7 +15,7 @@ public class MyApp extends Application {
     private static String username;
     private static int gender;
     private static String catId;
-
+    private static Context mContext;
     public static String getCurUserPhone() {
         return phone;
     }
@@ -60,5 +61,10 @@ public class MyApp extends Application {
     public void onCreate() {
         super.onCreate();
         setCurUserPhone("12345678910");
+        mContext = getApplicationContext();
+    }
+
+    public static Context getContext(){
+        return mContext;
     }
 }

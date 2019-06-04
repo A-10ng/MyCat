@@ -4,6 +4,7 @@ import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Color;
 import android.os.Looper;
 import android.support.annotation.NonNull;
@@ -31,26 +32,31 @@ import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
 
 import java.io.IOException;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
-import java.util.TimeZone;
 
 import top.longsh1z.www.mycat.R;
-import top.longsh1z.www.mycat.model.CatFood;
-import top.longsh1z.www.mycat.model.Check;
+import top.longsh1z.www.mycat.adapter.MyLimitScrollAdapter;
+import top.longsh1z.www.mycat.bean.MyCatWorldBean;
+import top.longsh1z.www.mycat.customview.LimitScrollerView;
+import top.longsh1z.www.mycat.bean.CatFood;
+import top.longsh1z.www.mycat.bean.Check;
 import top.longsh1z.www.mycat.utils.CalendarUtils;
 import top.longsh1z.www.mycat.utils.HttpUtils;
 import top.longsh1z.www.mycat.utils.MyApp;
+import top.longsh1z.www.mycat.utils.NetworkChangeReceiver;
 
 public class MainActivity extends AppCompatActivity {
 
+    private IntentFilter intentFilter;
+    private NetworkChangeReceiver mNetworkChangeReceiver;
+
     /**
-     *猫咪动画模块
+     * 猫咪动画模块
      */
     private TextView tv_username, tv_value;
     private Button btn_statistics, btn_add, btn_setup;
@@ -69,6 +75,7 @@ public class MainActivity extends AppCompatActivity {
 
     //当前已有的打卡项
     private List<Check> checkList;
+    private int checkListSize;
 
     //当前已有的打卡项view
     private Map<Integer, View> checkViews = new HashMap<>();
@@ -80,7 +87,7 @@ public class MainActivity extends AppCompatActivity {
     private View expandView;
 
     /**
-     *成长记录模块
+     * 成长记录模块
      */
     private TextView tv_checkRecord;
     private LinearLayout ll_checkMoreRecord;
@@ -92,7 +99,20 @@ public class MainActivity extends AppCompatActivity {
     private List<Check> growthRecordList;
 
     //当前已打卡的成长记录View集合
-    private Map<Integer,View> growthRecordViewList = new HashMap<>();
+    private Map<Integer, View> growthRecordViewList = new HashMap<>();
+
+    /**
+     * MyCat世界
+     */
+    private List<MyCatWorldBean> myCatWorldList = new ArrayList<>();
+    private List<MyCatWorldBean> myCatWorldDataList = new ArrayList<>();
+
+    private LimitScrollerView mLimitScrollerView;
+
+    private MyLimitScrollAdapter myLimitScrollAdapter;
+
+    private LinearLayout root_ll_myCatWorld;
+
 
     private static void setUpAnimation(final View catFoodView, long time) {
 //        ValueAnimator valueAnimator = ValueAnimator.ofInt(0, -30);
@@ -146,6 +166,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        initNetworkChaneReceiver();
+
         //初始化控件
         initViews();
 
@@ -157,20 +179,99 @@ public class MainActivity extends AppCompatActivity {
         //初始化成长记录模块
         initGrowthRecord();
 
+        //初始化MyCatWorld模块
+        initMyCatWorld();
+
         mSmartRefreshLayout.setOnRefreshListener(new OnRefreshListener() {
             @Override
             public void onRefresh(@NonNull RefreshLayout refreshLayout) {
                 initCheckView();
                 initGrowthRecord();
+                initMyCatWorld();
                 mSmartRefreshLayout.finishRefresh();
             }
         });
     }
 
-    private void initGrowthRecord() {
+    private void initNetworkChaneReceiver() {
+        intentFilter = new IntentFilter();
+        intentFilter.addAction("android.net.conn.CONNECTIVITY_CHANGE");
+        //intentFilter.setPriority(100);
+        mNetworkChangeReceiver = new NetworkChangeReceiver();
+        registerReceiver(mNetworkChangeReceiver,intentFilter);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unregisterReceiver(mNetworkChangeReceiver);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        mLimitScrollerView.startScroll();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        mLimitScrollerView.cancel();
+    }
+
+    public void initMyCatWorld() {
+
+        myLimitScrollAdapter = new MyLimitScrollAdapter();
+        mLimitScrollerView.setDataAdapter(myLimitScrollAdapter);
+
         new Thread(new Runnable() {
             @Override
             public void run() {
+                Looper.prepare();
+                try {
+                    myCatWorldList = HttpUtils.getMyCatWorldData();
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (myCatWorldList.size() != 0 || myCatWorldList != null) {
+                                for (int i = 0; i < myCatWorldList.size(); i++) {
+                                    MyCatWorldBean dataBean = new MyCatWorldBean();
+                                    MyCatWorldBean bean = myCatWorldList.get(i);
+                                    dataBean.setNum((i + 1) + "");
+                                    dataBean.setUsername(bean.getUsername());
+                                    dataBean.setGender(bean.getGender() == 0 ?
+                                            R.drawable.female : R.drawable.male);
+                                    dataBean.setCatType(bean.getCatType());
+                                    Log.i(TAG, "run: " + bean.getCatType());
+                                    dataBean.setCatId(bean.getCatId());
+                                    dataBean.setCatLevel(bean.getCatLevel());
+                                    myCatWorldDataList.add(dataBean);
+                                }
+                                if (myCatWorldDataList.size() < 3){
+                                    LimitScrollerView.setLimitNum(myCatWorldDataList.size());
+                                }
+                                myLimitScrollAdapter.setDatas(myCatWorldDataList, mLimitScrollerView);
+                            } else {
+                                //因为数据库里肯定有数据，那我就偷个懒不写这种情况了
+                            }
+                        }
+                    });
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    Toast toast = Toast.makeText(MainActivity.this, "断网了...", Toast.LENGTH_SHORT);
+                    toast.setGravity(Gravity.CENTER, 0, 0);
+                    toast.show();
+                }
+                Looper.loop();
+            }
+        }).start();
+    }
+
+    public void initGrowthRecord() {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                Looper.prepare();
                 try {
                     growthRecordList = HttpUtils.getGrowthRecord();
                     int gRListSize = growthRecordList.size();
@@ -178,8 +279,8 @@ public class MainActivity extends AppCompatActivity {
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                if (growthRecordViewList != null){
-                                    for (int key : growthRecordViewList.keySet()){
+                                if (growthRecordViewList != null) {
+                                    for (int key : growthRecordViewList.keySet()) {
                                         ll_growthRecord.removeView(growthRecordViewList.get(key));
                                     }
                                 }
@@ -190,7 +291,7 @@ public class MainActivity extends AppCompatActivity {
                                             ViewGroup.LayoutParams.MATCH_PARENT,
                                             ViewGroup.LayoutParams.WRAP_CONTENT
                                     );
-                                    rl_paras.setMargins(20,15,20,15);
+                                    rl_paras.setMargins(30, 15, 30, 15);
                                     relativeLayout.setLayoutParams(rl_paras);
 
                                     //动态生成左边的记录内容
@@ -214,6 +315,7 @@ public class MainActivity extends AppCompatActivity {
                                     right_textView.setTextSize(15);
                                     try {
                                         right_textView.setText(CalendarUtils.getInternal(growthRecordList.get(i).getDate()));
+                                        Log.i(TAG, "run:date>>>> "+growthRecordList.get(i).getDate());
                                     } catch (ParseException e) {
                                         e.printStackTrace();
                                     }
@@ -224,15 +326,19 @@ public class MainActivity extends AppCompatActivity {
                                     right_textView.setLayoutParams(rl_right_tvParas);
                                     relativeLayout.addView(right_textView);
 
-                                    ll_growthRecord.addView(relativeLayout,i);
-                                    growthRecordViewList.put(i,relativeLayout);
+                                    ll_growthRecord.addView(relativeLayout, i);
+                                    growthRecordViewList.put(i, relativeLayout);
                                 }
                             }
                         });
                     }
                 } catch (IOException e) {
                     e.printStackTrace();
+                    Toast toast = Toast.makeText(MainActivity.this, "断网了...", Toast.LENGTH_SHORT);
+                    toast.setGravity(Gravity.CENTER, 0, 0);
+                    toast.show();
                 }
+                Looper.loop();
             }
         }).start();
     }
@@ -252,6 +358,10 @@ public class MainActivity extends AppCompatActivity {
         tv_checkRecord = findViewById(R.id.tv_checkRecord);
         ll_checkMoreRecord = findViewById(R.id.ll_checkMoreRecord);
 
+        //MyCatWorld模块
+        mLimitScrollerView = findViewById(R.id.limitScroll);
+        root_ll_myCatWorld = findViewById(R.id.root_ll_myCatWorld);
+
         initXList();
         initYList();
     }
@@ -261,7 +371,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Toast.makeText(MainActivity.this, "123", Toast.LENGTH_SHORT).show();
-                startActivity(new Intent(MainActivity.this, SQLActivity.class));
+                startActivity(new Intent(MainActivity.this, StatisticActivity.class));
             }
         });
         btn_add.setOnClickListener(new View.OnClickListener() {
@@ -282,15 +392,16 @@ public class MainActivity extends AppCompatActivity {
         ll_checkMoreRecord.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(MainActivity.this,MoreRecordActivity.class));
+                startActivity(new Intent(MainActivity.this, MoreRecordActivity.class));
             }
         });
     }
 
-    private void initCheckView() {
+    public void initCheckView() {
         new Thread(new Runnable() {
             @Override
             public void run() {
+                Looper.prepare();
                 if (checkList != null) {
                     checkList.clear();
                     //清空已有的打卡项动画
@@ -303,37 +414,52 @@ public class MainActivity extends AppCompatActivity {
                         }
                     });
                 }
-                checkList = HttpUtils.getCheckInfo();
-                int checkListSize = checkList.size();
+                try{
+                    checkList = HttpUtils.getCheckInfo();
+                    checkListSize = checkList.size();
+                }catch (Exception e){
+                    e.printStackTrace();
+                    Toast toast = Toast.makeText(MainActivity.this, "断网了...", Toast.LENGTH_SHORT);
+                    toast.setGravity(Gravity.CENTER, 0, 0);
+                    toast.show();
+                }
 
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (checkListSize != 0) {
-                            //生成每一个具体的打卡项浮动动画
-                            // 一个默认在中间
-                            if (checkListSize == 1) {
-                                createCheckView(0, checkList.get(0).getCheckItem());
-                            } else if (checkListSize == 2) {
-                                for (int i = 0; i < 2; i++) {
-                                    createCheckView(i + 1, checkList.get(i).getCheckItem());
-                                }
-                            } else if (checkListSize == 3) {
-                                for (int i = 0; i < 3; i++) {
-                                    createCheckView(i, checkList.get(i).getCheckItem());
-                                }
-                            } else if (checkListSize == 4) {
-                                for (int i = 0; i < 4; i++) {
-                                    createCheckView(i + 1, checkList.get(i).getCheckItem());
-                                }
-                            } else {
-                                for (int i = 0; i < 5; i++) {
-                                    createCheckView(i, checkList.get(i).getCheckItem());
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            try{
+                            if (checkListSize != 0) {
+                                //生成每一个具体的打卡项浮动动画
+                                // 一个默认在中间
+                                if (checkListSize == 1) {
+                                    createCheckView(0, checkList.get(0).getCheckItem());
+                                } else if (checkListSize == 2) {
+                                    for (int i = 0; i < 2; i++) {
+                                        createCheckView(i + 1, checkList.get(i).getCheckItem());
+                                    }
+                                } else if (checkListSize == 3) {
+                                    for (int i = 0; i < 3; i++) {
+                                        createCheckView(i, checkList.get(i).getCheckItem());
+                                    }
+                                } else if (checkListSize == 4) {
+                                    for (int i = 0; i < 4; i++) {
+                                        createCheckView(i + 1, checkList.get(i).getCheckItem());
+                                    }
+                                } else {
+                                    for (int i = 0; i < 5; i++) {
+                                        createCheckView(i, checkList.get(i).getCheckItem());
+                                    }
                                 }
                             }
+                        }catch (Exception e){
+                            e.printStackTrace();
+                            Toast toast = Toast.makeText(MainActivity.this, "断网了...", Toast.LENGTH_SHORT);
+                            toast.setGravity(Gravity.CENTER, 0, 0);
+                            toast.show();
                         }
-                    }
-                });
+                        }
+                    });
+                Looper.loop();
             }
         }).start();
     }
@@ -442,6 +568,9 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    /**
+    *郑阿强的需求
+     */
     private void showFinishCheckDiialog(int position, String checkItem, View catFoodView) {
         final AlertDialog dialog = new AlertDialog.Builder(this).create();
         View view = LayoutInflater.from(this).inflate(R.layout.finish_checkitem_dialog_layout, null);
@@ -479,6 +608,9 @@ public class MainActivity extends AppCompatActivity {
                             }
                         } catch (IOException e) {
                             e.printStackTrace();
+                            Toast toast = Toast.makeText(MainActivity.this, "断网了...", Toast.LENGTH_SHORT);
+                            toast.setGravity(Gravity.CENTER, 0, 0);
+                            toast.show();
                         }
                         Looper.loop();
                     }
@@ -536,6 +668,9 @@ public class MainActivity extends AppCompatActivity {
                             }
                         } catch (IOException e) {
                             e.printStackTrace();
+                            Toast toast = Toast.makeText(MainActivity.this, "断网了...", Toast.LENGTH_SHORT);
+                            toast.setGravity(Gravity.CENTER, 0, 0);
+                            toast.show();
                         }
                         Looper.loop();
                     }
@@ -701,6 +836,9 @@ public class MainActivity extends AppCompatActivity {
                             }
                         } catch (IOException e) {
                             e.printStackTrace();
+                            Toast toast = Toast.makeText(MainActivity.this, "断网了...", Toast.LENGTH_SHORT);
+                            toast.setGravity(Gravity.CENTER, 0, 0);
+                            toast.show();
                         }
                         Looper.loop();
                     }

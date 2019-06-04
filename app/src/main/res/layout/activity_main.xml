@@ -111,6 +111,7 @@
                     android:layout_marginLeft="15dp"
                     android:layout_marginTop="10dp"
                     android:layout_marginRight="15dp"
+                    android:paddingTop="10dp"
                     android:background="@color/white"
                     android:orientation="vertical">
 
@@ -119,14 +120,21 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:gravity="center_horizontal"
-                        android:layout_marginTop="20dp"
-                        android:layout_marginBottom="20dp">
+                        android:layout_marginTop="10dp"
+                        android:orientation="vertical">
+
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="0.5dp"
+                            android:background="@color/lightgray"/>
 
                         <TextView
                             android:id="@+id/tv_checkRecord"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_gravity="center_horizontal"
+                            android:layout_gravity="center"
+                            android:layout_marginTop="10dp"
+                            android:layout_marginBottom="10dp"
                             android:text="@string/checkMoreRecord"
                             android:textColor="@color/black"
                             android:textSize="19sp"/>
@@ -135,6 +143,50 @@
 
 
                 </LinearLayout>
+
+                <TextView
+                    android:id="@+id/tv_myCatWorld"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginTop="20dp"
+                    android:text="@string/activity_main_myCatWorld"
+                    android:textColor="@color/black"
+                    android:textSize="18sp"/>
+
+                <LinearLayout
+                    android:id="@+id/root_ll_myCatWorld"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="15dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginRight="15dp"
+                    android:paddingTop="20dp"
+                    android:paddingBottom="20dp"
+                    android:paddingLeft="10dp"
+                    android:paddingRight="10dp"
+                    android:background="@drawable/mycatworld_bg"
+                    android:orientation="vertical">
+
+                    <top.longsh1z.www.mycat.customview.LimitScrollerView
+                        android:id="@+id/limitScroll"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:limit="3"
+                        app:durationTime="3000"
+                        app:periodTime="5000">
+                    </top.longsh1z.www.mycat.customview.LimitScrollerView>
+
+                </LinearLayout>
+
+                <TextView
+                    android:layout_marginTop="40dp"
+                    android:layout_marginBottom="40dp"
+                    android:gravity="center"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/quote"/>
+
             </LinearLayout>
         </LinearLayout>
     </ScrollView>

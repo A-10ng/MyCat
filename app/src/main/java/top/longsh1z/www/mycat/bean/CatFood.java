@@ -1,4 +1,4 @@
-package top.longsh1z.www.mycat.model;
+package top.longsh1z.www.mycat.bean;
 
 /**
  * Created by LongSh1z on 2019/5/3.
