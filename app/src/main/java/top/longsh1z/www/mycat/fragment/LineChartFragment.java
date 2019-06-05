@@ -3,6 +3,7 @@ package top.longsh1z.www.mycat.fragment;
 import android.app.Instrumentation;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Looper;
 import android.os.SystemClock;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -141,8 +142,10 @@ public class LineChartFragment extends Fragment implements StatisticLineChartVie
 
     @Override
     public void getDataFailed() {
+        Looper.prepare();
         Toast toast = Toast.makeText(getActivity(), "获取数据失败了...", Toast.LENGTH_SHORT);
         toast.setGravity(Gravity.CENTER, 0, 0);
         toast.show();
+        Looper.loop();
     }
 }

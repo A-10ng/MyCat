@@ -7,6 +7,7 @@ import com.google.gson.reflect.TypeToken;
 
 import java.io.IOException;
 import java.lang.reflect.Type;
+import java.text.ParseException;
 import java.util.List;
 
 import okhttp3.FormBody;
@@ -137,5 +138,29 @@ public class HttpUtils {
     private static List<MyCatWorldBean> getMyCatWorldList(String data, Type type) {
         Gson gson = new Gson();
         return gson.fromJson(data, type);
+    }
+
+    public static boolean haveFiveRecord() throws IOException, ParseException {
+        List<Check> recordList = getGrowthRecord();
+        String curMon = CalendarUtils.CurTimeInfor().get("month")+"";
+        String curDate = CalendarUtils.CurTimeInfor().get("CurDate")+"";
+        String curMonDate = curMon+"-"+curDate;
+        Log.i(TAG, "haveFiveRecord: curMonDate"+curMonDate);
+        int todayCheckNum = 0;
+
+        for (int i = 0; i <recordList.size(); i++) {
+            String checkMon = CalendarUtils.getCurMonthThroDate( recordList.get(i).getDate());
+            int checkDate = CalendarUtils.getCurDateThroDate( recordList.get(i).getDate());
+            String checkMonDate = checkMon+"-"+checkDate;
+
+            if (curMonDate == checkMonDate || curMonDate.equals(checkMonDate)){
+                todayCheckNum++;
+            }
+        }
+        if (todayCheckNum<=4){
+            return false;
+        }else {
+            return true;
+        }
     }
 }

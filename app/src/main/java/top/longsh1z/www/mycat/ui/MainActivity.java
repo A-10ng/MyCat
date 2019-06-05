@@ -370,7 +370,6 @@ public class MainActivity extends AppCompatActivity {
         btn_statistics.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(MainActivity.this, "123", Toast.LENGTH_SHORT).show();
                 startActivity(new Intent(MainActivity.this, StatisticActivity.class));
             }
         });
@@ -585,28 +584,37 @@ public class MainActivity extends AppCompatActivity {
                         Log.i("MainActivity", "onClick: ensure");
                         Looper.prepare();
                         try {
-                            boolean isFinishSuccess = HttpUtils.finishCheckItem(checkItem, MyApp.getCurTime());
-                            Log.i(TAG, "run: isFinishSuccess:" + isFinishSuccess);
-                            if (isFinishSuccess) {
-                                Toast toast = Toast.makeText(MainActivity.this, "打卡成功！", Toast.LENGTH_SHORT);
-                                toast.setGravity(Gravity.CENTER, 0, 0);
-                                toast.show();
-                                checkViews.remove(position);
-                                runOnUiThread(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        relativeLayout.removeView(catFoodView);
-                                        initGrowthRecord();
-                                    }
-                                });
-                                dialog.dismiss();
-                            } else {
-                                Toast toast = Toast.makeText(MainActivity.this, "出现异常了！", Toast.LENGTH_SHORT);
+                            boolean haveFiveRecord = HttpUtils.haveFiveRecord();
+                            if (haveFiveRecord){
+                                Toast toast = Toast.makeText(MainActivity.this, "今日打卡数量已达上限了哦！", Toast.LENGTH_SHORT);
                                 toast.setGravity(Gravity.CENTER, 0, 0);
                                 toast.show();
                                 dialog.dismiss();
+                            }else {
+                                boolean isFinishSuccess = HttpUtils.finishCheckItem(checkItem, MyApp.getCurTime());
+                                Log.i(TAG, "run: isFinishSuccess:" + isFinishSuccess);
+                                if (isFinishSuccess) {
+                                    Toast toast = Toast.makeText(MainActivity.this, "打卡成功！", Toast.LENGTH_SHORT);
+                                    toast.setGravity(Gravity.CENTER, 0, 0);
+                                    toast.show();
+                                    checkViews.remove(position);
+                                    runOnUiThread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            relativeLayout.removeView(catFoodView);
+                                            initGrowthRecord();
+                                        }
+                                    });
+                                    dialog.dismiss();
+                                } else {
+                                    Toast toast = Toast.makeText(MainActivity.this, "出现异常了！", Toast.LENGTH_SHORT);
+                                    toast.setGravity(Gravity.CENTER, 0, 0);
+                                    toast.show();
+                                    dialog.dismiss();
+                                }
                             }
-                        } catch (IOException e) {
+
+                        } catch (IOException | ParseException e) {
                             e.printStackTrace();
                             Toast toast = Toast.makeText(MainActivity.this, "断网了...", Toast.LENGTH_SHORT);
                             toast.setGravity(Gravity.CENTER, 0, 0);
