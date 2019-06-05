@@ -227,7 +227,6 @@ public class MainActivity extends AppCompatActivity {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                Looper.prepare();
                 try {
                     myCatWorldList = HttpUtils.getMyCatWorldData();
                     runOnUiThread(new Runnable() {
@@ -258,11 +257,12 @@ public class MainActivity extends AppCompatActivity {
                     });
                 } catch (IOException e) {
                     e.printStackTrace();
+                    Looper.prepare();
                     Toast toast = Toast.makeText(MainActivity.this, "断网了...", Toast.LENGTH_SHORT);
                     toast.setGravity(Gravity.CENTER, 0, 0);
                     toast.show();
+                    Looper.loop();
                 }
-                Looper.loop();
             }
         }).start();
     }
@@ -285,49 +285,96 @@ public class MainActivity extends AppCompatActivity {
                                     }
                                 }
 
-                                for (int i = 0; i < 3; i++) {
-                                    RelativeLayout relativeLayout = new RelativeLayout(MainActivity.this);
-                                    RelativeLayout.LayoutParams rl_paras = new RelativeLayout.LayoutParams(
-                                            ViewGroup.LayoutParams.MATCH_PARENT,
-                                            ViewGroup.LayoutParams.WRAP_CONTENT
-                                    );
-                                    rl_paras.setMargins(30, 15, 30, 15);
-                                    relativeLayout.setLayoutParams(rl_paras);
+                                if (growthRecordList.size()<3){
+                                    for (int i = 0; i < growthRecordList.size(); i++) {
+                                        RelativeLayout relativeLayout = new RelativeLayout(MainActivity.this);
+                                        RelativeLayout.LayoutParams rl_paras = new RelativeLayout.LayoutParams(
+                                                ViewGroup.LayoutParams.MATCH_PARENT,
+                                                ViewGroup.LayoutParams.WRAP_CONTENT
+                                        );
+                                        rl_paras.setMargins(30, 15, 30, 15);
+                                        relativeLayout.setLayoutParams(rl_paras);
 
-                                    //动态生成左边的记录内容
-                                    TextView left_textView = new TextView(MainActivity.this);
-                                    left_textView.setEllipsize(TextUtils.TruncateAt.END);
-                                    left_textView.setTextSize(15);
-                                    left_textView.setTextColor(Color.BLACK);
-                                    left_textView.setText("完成" + growthRecordList.get(i).getCheckItem() + "，喂养猫粮50g");
-                                    RelativeLayout.LayoutParams rl_left_tvParas = new RelativeLayout.LayoutParams(
-                                            ViewGroup.LayoutParams.WRAP_CONTENT,
-                                            ViewGroup.LayoutParams.WRAP_CONTENT);
-                                    rl_left_tvParas.addRule(RelativeLayout.ALIGN_LEFT);
-                                    left_textView.setLayoutParams(rl_left_tvParas);
-                                    relativeLayout.addView(left_textView);
+                                        //动态生成左边的记录内容
+                                        TextView left_textView = new TextView(MainActivity.this);
+                                        left_textView.setEllipsize(TextUtils.TruncateAt.END);
+                                        left_textView.setTextSize(15);
+                                        left_textView.setTextColor(Color.BLACK);
+                                        left_textView.setText("完成" + growthRecordList.get(i).getCheckItem() + "，喂养猫粮50g");
+                                        RelativeLayout.LayoutParams rl_left_tvParas = new RelativeLayout.LayoutParams(
+                                                ViewGroup.LayoutParams.WRAP_CONTENT,
+                                                ViewGroup.LayoutParams.WRAP_CONTENT);
+                                        rl_left_tvParas.addRule(RelativeLayout.ALIGN_LEFT);
+                                        left_textView.setLayoutParams(rl_left_tvParas);
+                                        relativeLayout.addView(left_textView);
 
-                                    /*
-                                     *动态生成右边的记录时间
-                                     */
-                                    TextView right_textView = new TextView(MainActivity.this);
-                                    right_textView.setEllipsize(TextUtils.TruncateAt.END);
-                                    right_textView.setTextSize(15);
-                                    try {
-                                        right_textView.setText(CalendarUtils.getInternal(growthRecordList.get(i).getDate()));
-                                        Log.i(TAG, "run:date>>>> "+growthRecordList.get(i).getDate());
-                                    } catch (ParseException e) {
-                                        e.printStackTrace();
+                                        /*
+                                         *动态生成右边的记录时间
+                                         */
+                                        TextView right_textView = new TextView(MainActivity.this);
+                                        right_textView.setEllipsize(TextUtils.TruncateAt.END);
+                                        right_textView.setTextSize(15);
+                                        try {
+                                            right_textView.setText(CalendarUtils.getInternal(growthRecordList.get(i).getDate()));
+                                            Log.i(TAG, "run:date>>>> "+growthRecordList.get(i).getDate());
+                                        } catch (ParseException e) {
+                                            e.printStackTrace();
+                                        }
+                                        RelativeLayout.LayoutParams rl_right_tvParas = new RelativeLayout.LayoutParams(
+                                                ViewGroup.LayoutParams.WRAP_CONTENT,
+                                                ViewGroup.LayoutParams.WRAP_CONTENT);
+                                        rl_right_tvParas.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+                                        right_textView.setLayoutParams(rl_right_tvParas);
+                                        relativeLayout.addView(right_textView);
+
+                                        ll_growthRecord.addView(relativeLayout, i);
+                                        growthRecordViewList.put(i, relativeLayout);
                                     }
-                                    RelativeLayout.LayoutParams rl_right_tvParas = new RelativeLayout.LayoutParams(
-                                            ViewGroup.LayoutParams.WRAP_CONTENT,
-                                            ViewGroup.LayoutParams.WRAP_CONTENT);
-                                    rl_right_tvParas.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
-                                    right_textView.setLayoutParams(rl_right_tvParas);
-                                    relativeLayout.addView(right_textView);
+                                }else {
+                                    for (int i = 0; i < 3; i++) {
+                                        RelativeLayout relativeLayout = new RelativeLayout(MainActivity.this);
+                                        RelativeLayout.LayoutParams rl_paras = new RelativeLayout.LayoutParams(
+                                                ViewGroup.LayoutParams.MATCH_PARENT,
+                                                ViewGroup.LayoutParams.WRAP_CONTENT
+                                        );
+                                        rl_paras.setMargins(30, 15, 30, 15);
+                                        relativeLayout.setLayoutParams(rl_paras);
 
-                                    ll_growthRecord.addView(relativeLayout, i);
-                                    growthRecordViewList.put(i, relativeLayout);
+                                        //动态生成左边的记录内容
+                                        TextView left_textView = new TextView(MainActivity.this);
+                                        left_textView.setEllipsize(TextUtils.TruncateAt.END);
+                                        left_textView.setTextSize(15);
+                                        left_textView.setTextColor(Color.BLACK);
+                                        left_textView.setText("完成" + growthRecordList.get(i).getCheckItem() + "，喂养猫粮50g");
+                                        RelativeLayout.LayoutParams rl_left_tvParas = new RelativeLayout.LayoutParams(
+                                                ViewGroup.LayoutParams.WRAP_CONTENT,
+                                                ViewGroup.LayoutParams.WRAP_CONTENT);
+                                        rl_left_tvParas.addRule(RelativeLayout.ALIGN_LEFT);
+                                        left_textView.setLayoutParams(rl_left_tvParas);
+                                        relativeLayout.addView(left_textView);
+
+                                        /*
+                                         *动态生成右边的记录时间
+                                         */
+                                        TextView right_textView = new TextView(MainActivity.this);
+                                        right_textView.setEllipsize(TextUtils.TruncateAt.END);
+                                        right_textView.setTextSize(15);
+                                        try {
+                                            right_textView.setText(CalendarUtils.getInternal(growthRecordList.get(i).getDate()));
+                                            Log.i(TAG, "run:date>>>> "+growthRecordList.get(i).getDate());
+                                        } catch (ParseException e) {
+                                            e.printStackTrace();
+                                        }
+                                        RelativeLayout.LayoutParams rl_right_tvParas = new RelativeLayout.LayoutParams(
+                                                ViewGroup.LayoutParams.WRAP_CONTENT,
+                                                ViewGroup.LayoutParams.WRAP_CONTENT);
+                                        rl_right_tvParas.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+                                        right_textView.setLayoutParams(rl_right_tvParas);
+                                        relativeLayout.addView(right_textView);
+
+                                        ll_growthRecord.addView(relativeLayout, i);
+                                        growthRecordViewList.put(i, relativeLayout);
+                                    }
                                 }
                             }
                         });

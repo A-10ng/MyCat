@@ -6,7 +6,7 @@ public class MyCatWorldBean {
     private String username;
     private int gender;
     private String type;
-    private String catId;
+    private String catName;
     private int level;
 
     public String getNum() {
@@ -42,11 +42,11 @@ public class MyCatWorldBean {
     }
 
     public String getCatId() {
-        return catId;
+        return catName;
     }
 
     public void setCatId(String catId) {
-        this.catId = catId;
+        this.catName = catId;
     }
 
     public int getCatLevel() {

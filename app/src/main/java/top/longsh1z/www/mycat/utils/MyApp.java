@@ -60,7 +60,7 @@ public class MyApp extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        setCurUserPhone("12345678910");
+        setCurUserPhone("13579246810");
         mContext = getApplicationContext();
     }
 
