@@ -1,12 +1,26 @@
 package top.longsh1z.www.mycat.utils;
 
+import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.util.Log;
+import android.view.Gravity;
+import android.widget.Toast;
 
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.TimeZone;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
+import top.longsh1z.www.mycat.ui.LoginActivity;
+import top.longsh1z.www.mycat.ui.MainActivity;
 
 public class MyApp extends Application {
     public static final String SERVER_URL = "http://120.78.219.119:8080/MyCatServer/";
@@ -16,6 +30,7 @@ public class MyApp extends Application {
     private static int gender;
     private static String catId;
     private static Context mContext;
+
     public static String getCurUserPhone() {
         return phone;
     }
@@ -57,14 +72,13 @@ public class MyApp extends Application {
 
     }
 
+    public static Context getContext() {
+        return mContext;
+    }
+
     @Override
     public void onCreate() {
         super.onCreate();
-        setCurUserPhone("13579246810");
         mContext = getApplicationContext();
-    }
-
-    public static Context getContext(){
-        return mContext;
     }
 }

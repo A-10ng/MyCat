@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:background="#eeeeee"
+              android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="30dp"
+        android:layout_marginTop="30dp"
+        android:text="快来拥有你的小猫吧~"
+        android:textColor="@color/bulebutton"
+        android:textSize="26sp"/>
+
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="30dp"
+        android:layout_marginTop="20dp"
+        android:text="请选择您可爱的猫猫"
+        android:textSize="16sp"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <pl.droidsonroids.gif.GifImageView
+            android:id="@+id/gif1"
+            android:layout_width="0dp"
+            android:layout_height="140dp"
+            android:layout_marginLeft="40dp"
+            android:layout_weight="1"
+            android:src="@drawable/coming"/>
+
+
+        <pl.droidsonroids.gif.GifImageView
+            android:id="@+id/gif2"
+            android:layout_width="0dp"
+            android:layout_height="160dp"
+            android:layout_marginLeft="40dp"
+            android:layout_marginRight="30dp"
+            android:layout_weight="1"
+            android:src="@drawable/emmmm"/>
+
+
+    </LinearLayout>
+
+    <RadioGroup
+        android:id="@+id/catselect"
+        android:layout_width="match_parent"
+        android:layout_height="25dp"
+        android:orientation="horizontal">
+
+        <RadioButton
+            android:id="@+id/puppetCat"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="70dp"
+            android:checked="true"
+            android:text="布偶猫"
+            android:textSize="16sp"/>
+
+        <RadioButton
+            android:id="@+id/orangeCat"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="90dp"
+            android:text="橘猫"
+            android:textSize="16sp"/>
+    </RadioGroup>
+
+    <TextView
+        android:id="@+id/nameCat"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="30dp"
+        android:layout_marginTop="25dp"
+        android:text="给猫猫起个名字吧"
+        android:textSize="16sp"/>
+
+    <EditText
+        android:id="@+id/catname-input"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:layout_marginRight="30dp"
+        android:layout_marginLeft="30dp"
+        android:textAppearance="@style/TextAppearance.AppCompat"
+        android:textColor="@color/bulebutton"/>
+
+    <TextView
+        android:id="@+id/personalinfo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="30dp"
+        android:layout_marginTop="16dp"
+        android:text="完善个人信息"
+        android:textSize="20sp"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/username-text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="30dp"
+            android:layout_marginBottom="5dp"
+            android:layout_marginLeft="30dp"
+            android:text="昵称"
+            android:textSize="16sp"/>
+
+        <EditText
+            android:id="@+id/username-input"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="30dp"
+            android:layout_marginRight="30dp"
+            android:hint="请输入您的昵称"
+            android:textSize="16sp"
+            android:textColor="@color/bulebutton"/>
+
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_marginTop="5dp"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/gender"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="30dp"
+            android:layout_marginLeft="30dp"
+            android:text="性别"
+            android:textSize="16sp"/>
+
+        <Spinner
+            android:id="@+id/spinner-genderselect"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="30dp"
+            android:layout_marginRight="30dp"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="bottom"
+        android:orientation="vertical">
+
+        <Button
+            android:id="@+id/entrance"
+            style="?android:attr/borderlessButtonStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="30dp"
+            android:layout_marginRight="30dp"
+            android:layout_marginBottom="10dp"
+            android:background="@drawable/loginbutton"
+            android:text="进入MyCat"
+            android:textAllCaps="false"
+            android:textColor="@color/white"
+            android:textSize="16sp"/>
+    </LinearLayout>
+
+    <ImageView
+    android:layout_marginTop="-455dp"
+    android:id="@+id/imageView"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:srcCompat="@drawable/buoumaokou"
+    android:alpha="0.15"/>
+
+
+</LinearLayout>

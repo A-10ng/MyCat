@@ -3,6 +3,10 @@
     <color name="colorPrimary">#008577</color>
     <color name="colorPrimaryDark">#00574B</color>
     <color name="colorAccent">#D81B60</color>
+    <color name="bohelv">#7FFFD4</color>
+    <color name="bulebutton">#0783FD</color>
+    <color name="shaonvfen">#FEC8D6</color>
+    <color name="bilan">#3eede7</color>
     <color name="transparent">#00000000</color><!--透明色 -->
     <color name="white">#ffffff</color><!--白色 -->
     <color name="ivory">#FFFFF0</color><!--象牙色 -->

@@ -6,6 +6,9 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:textColorHint">@color/bulebutton</item> //提示字体颜色
+        <item name="colorControlNormal">@color/bulebutton</item>   //下划线没有获取焦点，也就是默认的颜色
+        <item name="colorControlActivated">@color/bulebutton</item>  //点击时下划线的颜色
     </style>
 
     <style name="Transparent_BG_Style" parent="Theme.AppCompat.Light.NoActionBar">

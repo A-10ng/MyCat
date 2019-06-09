@@ -33,6 +33,9 @@ dependencies {
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
 
+    //TextInputLayout
+    implementation 'com.android.support:design:28.0.0'
+
     //网络请求框架
     implementation("com.squareup.okhttp3:okhttp:3.14.1")
 

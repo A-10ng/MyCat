@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <TextView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:text="New Text"
+        android:padding="10dp"
+        android:singleLine="true"
+        android:textSize="15sp"
+        android:textColor="#f77718"
+        android:gravity="left"
+        android:background="#aa33ac"
+        android:id="@+id/textView3333" />
+
+</selector>
