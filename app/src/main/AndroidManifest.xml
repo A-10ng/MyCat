@@ -15,7 +15,6 @@
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
         <activity android:name=".ui.RegisterActivity">
-
         </activity>
         <activity android:name=".ui.LoginActivity">
             <intent-filter>
@@ -26,8 +25,8 @@
         </activity>
         <activity android:name=".ui.MoreRecordActivity">
         </activity>
-        <activity android:name=".ui.MainActivity">
-
+        <activity android:name=".ui.MainActivity"
+            android:theme="@style/Transparent_BG_Style">
         </activity>
         <activity android:name=".ui.StatisticActivity"/>
     </application>

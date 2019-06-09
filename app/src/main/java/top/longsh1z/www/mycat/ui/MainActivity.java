@@ -684,7 +684,6 @@ public class MainActivity extends AppCompatActivity {
         dialog.show();
         //设置背景透明
         dialog.getWindow().setBackgroundDrawableResource(R.color.transparent);
-//                dialog.getWindow().setDimAmount(0f);
     }
 
     private void showCancelCheckDialog(int position, String checkItem, View catFoodView) {

@@ -109,12 +109,12 @@
             android:textSize="18sp"/>
     </LinearLayout>
 
-    <!--<ImageView-->
-        <!--android:id="@+id/imageView"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:layout_marginTop="-600dp"-->
-        <!--android:alpha="0.25"-->
-        <!--app:srcCompat="@drawable/buoumaokou"/>-->
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="-600dp"
+        android:alpha="0.25"
+        app:srcCompat="@drawable/buoumaokou"/>
 
 </LinearLayout>
