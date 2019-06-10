@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -7,7 +6,7 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="365dp"
         android:elevation="4dp"
         android:layout_marginLeft="20dp"
         android:layout_marginTop="100dp"
@@ -15,21 +14,10 @@
         android:background="@drawable/view_shape"
         android:orientation="vertical">
 
-    <ScrollView
-        android:id="@+id/scrollView"
-        android:layout_width="match_parent"
-        android:layout_height="350dp">
-
-        <LinearLayout
+        <com.github.mikephil.charting.charts.BarChart
+            android:id="@+id/barChart"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
+            android:layout_height="350dp" />
 
-            <lecho.lib.hellocharts.view.LineChartView
-                android:id="@+id/chartView"
-                android:layout_width="match_parent"
-                android:layout_height="350dp" />
-        </LinearLayout>
-    </ScrollView>
     </LinearLayout>
 </LinearLayout>

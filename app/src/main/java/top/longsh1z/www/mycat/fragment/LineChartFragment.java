@@ -3,7 +3,6 @@ package top.longsh1z.www.mycat.fragment;
 import android.app.Instrumentation;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.os.Looper;
 import android.os.SystemClock;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -14,17 +13,14 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ScrollView;
 import android.widget.Toast;
-
-import org.greenrobot.eventbus.EventBus;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import lecho.lib.hellocharts.gesture.ContainerScrollType;
-import lecho.lib.hellocharts.gesture.ZoomType;
 import lecho.lib.hellocharts.model.Axis;
 import lecho.lib.hellocharts.model.AxisValue;
 import lecho.lib.hellocharts.model.Line;
@@ -38,18 +34,30 @@ import top.longsh1z.www.mycat.customview.ChartView;
 import top.longsh1z.www.mycat.presenter.StatisticLineChartPresenter;
 import top.longsh1z.www.mycat.ui.MainActivity;
 import top.longsh1z.www.mycat.view.StatisticLineChartView;
+import top.longsh1z.www.mycat.viewholder.BackgroundDrawable;
 
 public class LineChartFragment extends Fragment implements StatisticLineChartView {
 
     private View rootView;
     private StatisticLineChartPresenter statisticLineChartPresenter;
     private LineChartView chartView;
+//    private LineChart chartView;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
         rootView = inflater.inflate(R.layout.linechart_fragment, container, false);
+
+        BackgroundDrawable drawable = BackgroundDrawable.builder()
+                .left(40)//设置左侧斜切点的高度（取值范围是大于0，小于100）
+                .right(30)//设置右侧侧斜切点的高度（取值范围是大于0，小于100）
+                .topColor(Color.parseColor("#ead19a"))//设置上半部分的颜色（默认是白色）
+                // .bottomColor(Color.parseColor("#76C4EB"))//设置下半部分的颜色（默认是白色）
+                .build();//调用build进行创建。
+
+//将这个drawable设置给View
+        rootView.setBackground(drawable);
 
         initViews();
 
@@ -61,10 +69,42 @@ public class LineChartFragment extends Fragment implements StatisticLineChartVie
 
         return rootView;
     }
-
     private void initViews() {
         chartView = rootView.findViewById(R.id.chartView);
+        ScrollView scrollView=rootView.findViewById(R.id.scrollView);
+
+
+        View.OnTouchListener touchListener = new View.OnTouchListener() {
+            float ratio = 10f; //水平和竖直方向滑动的灵敏度,偏大是水平方向灵敏
+            float x0 = 0f;
+            float y0 = 0f;
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                switch (event.getAction()) {
+                    case MotionEvent.ACTION_DOWN:
+                        x0 = event.getX();
+                        y0 = event.getY();
+                        break;
+                    case MotionEvent.ACTION_UP:
+                        x0 = event.getX();
+                        y0 = event.getY();
+                        break;
+                    case MotionEvent.ACTION_MOVE:
+                        float dx = Math.abs(event.getX() - x0);
+                        float dy = Math.abs(event.getY() - y0);
+                        x0 = event.getX();
+                        y0 = event.getY();
+                        scrollView.requestDisallowInterceptTouchEvent(dx * ratio > dy);
+                        break;
+                }
+                return false;
+            }
+        };
+
+        chartView.setOnTouchListener(touchListener);
+
     }
+
 
     private void initChartViewData() throws InterruptedException {
         statisticLineChartPresenter = new StatisticLineChartPresenter(this);
@@ -93,7 +133,7 @@ public class LineChartFragment extends Fragment implements StatisticLineChartVie
         //X轴
         Axis axisX = new Axis(); //X轴
         axisX.setHasTiltedLabels(true);  //X坐标轴字体是斜的显示还是直的，true是斜的显示
-        axisX.setTextColor(Color.WHITE);  //设置字体颜色
+        axisX.setTextColor(Color.BLACK);  //设置字体颜色
         //axisX.setName("date");  //表格名称
         axisX.setTextSize(10);//设置字体大小
         axisX.setMaxLabelChars(7); //最多几个X轴坐标，意思就是你的缩放让X轴上数据的个数7<=x<=mAxisXValues.length
@@ -110,7 +150,7 @@ public class LineChartFragment extends Fragment implements StatisticLineChartVie
             value.setLabel(label);
             values.add(value);
         }
-        axisY.setTextColor(Color.WHITE);
+        axisY.setTextColor(Color.BLACK);
         axisY.setTextSize(10);
         axisY.setValues(values);
         data.setAxisYLeft(axisY);
@@ -142,10 +182,8 @@ public class LineChartFragment extends Fragment implements StatisticLineChartVie
 
     @Override
     public void getDataFailed() {
-        Looper.prepare();
         Toast toast = Toast.makeText(getActivity(), "获取数据失败了...", Toast.LENGTH_SHORT);
         toast.setGravity(Gravity.CENTER, 0, 0);
         toast.show();
-        Looper.loop();
     }
 }
