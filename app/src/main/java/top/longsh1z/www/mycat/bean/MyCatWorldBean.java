@@ -7,7 +7,7 @@ public class MyCatWorldBean {
     private int gender;
     private String type;
     private String catName;
-    private int level;
+    private String level;
 
     public String getNum() {
         return num;
@@ -49,11 +49,11 @@ public class MyCatWorldBean {
         this.catName = catId;
     }
 
-    public int getCatLevel() {
+    public String getCatLevel() {
         return level;
     }
 
-    public void setCatLevel(int catLevel) {
+    public void setCatLevel(String catLevel) {
         this.level = catLevel;
     }
 }

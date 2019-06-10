@@ -15,7 +15,8 @@
     <LinearLayout
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
+        android:layout_weight="1.3"
+        android:gravity="center"
         >
 
         <TextView
@@ -23,7 +24,7 @@
             android:layout_width="wrap_content"
             android:layout_height="30dp"
             android:gravity="right|center_vertical"
-            android:text="用户名"/>
+            android:text="LongSh1z"/>
 
         <ImageView
             android:id="@+id/iv_gender"

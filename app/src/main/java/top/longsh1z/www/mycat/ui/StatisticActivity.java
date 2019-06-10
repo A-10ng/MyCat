@@ -10,6 +10,7 @@ import org.greenrobot.eventbus.EventBus;
 
 import top.longsh1z.www.mycat.R;
 import top.longsh1z.www.mycat.fragment.LineChartFragment;
+import top.longsh1z.www.mycat.utils.ActivityCollector;
 
 public class StatisticActivity extends AppCompatActivity {
 
@@ -19,10 +20,17 @@ public class StatisticActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_statistic);
+        ActivityCollector.addActivity(this);
 
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction transaction = fragmentManager.beginTransaction();
         transaction.replace(R.id.framelayout,new LineChartFragment());
         transaction.commit();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        ActivityCollector.removeActivity(this);
     }
 }

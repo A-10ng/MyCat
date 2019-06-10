@@ -78,7 +78,7 @@ public class LimitScrollerView extends LinearLayout implements View.OnClickListe
         ll_down = ll_content2;
         if(attrs!=null){
             TypedArray ta = context.obtainStyledAttributes(attrs, R.styleable.LimitScroller);
-            limit = ta.getInt(R.styleable.LimitScroller_limit, 1);
+            limit = ta.getInt(R.styleable.LimitScroller_limit, 3);
             durationTime = ta.getInt(R.styleable.LimitScroller_durationTime, 1000);
             periodTime = ta.getInt(R.styleable.LimitScroller_periodTime, 1000);
             ta.recycle();  //注意回收

@@ -5,6 +5,15 @@ public class Cat {
     private String type;
     private int level;
     private int value;
+    private String catName;
+
+    public String getCatName() {
+        return catName;
+    }
+
+    public void setCatName(String catName) {
+        this.catName = catName;
+    }
 
     public String getCatId() {
         return catId;

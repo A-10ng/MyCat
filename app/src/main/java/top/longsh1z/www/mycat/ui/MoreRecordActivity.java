@@ -30,6 +30,7 @@ import top.longsh1z.www.mycat.R;
 import top.longsh1z.www.mycat.adapter.CheckRecordAdapter;
 import top.longsh1z.www.mycat.bean.CheckRecordBean;
 import top.longsh1z.www.mycat.bean.Check;
+import top.longsh1z.www.mycat.utils.ActivityCollector;
 import top.longsh1z.www.mycat.utils.HttpUtils;
 
 public class MoreRecordActivity extends Activity {
@@ -61,6 +62,7 @@ public class MoreRecordActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_more_record);
+        ActivityCollector.addActivity(this);
 
         handler = new Handler(){
             @Override
@@ -89,6 +91,8 @@ public class MoreRecordActivity extends Activity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        ActivityCollector.removeActivity(this);
+
         rv_dataList.clear();
         temp_dataList.clear();
         recordList.clear();

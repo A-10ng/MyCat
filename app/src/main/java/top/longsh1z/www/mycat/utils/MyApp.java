@@ -29,7 +29,16 @@ public class MyApp extends Application {
     private static String username;
     private static int gender;
     private static String catId;
+    private static String catName;
     private static Context mContext;
+
+    public static String getCatId() {
+        return catId;
+    }
+
+    public static void setCatId(String catId) {
+        MyApp.catId = catId;
+    }
 
     public static String getCurUserPhone() {
         return phone;
@@ -55,12 +64,12 @@ public class MyApp extends Application {
         MyApp.gender = gender;
     }
 
-    public static String getCurUserCatId() {
-        return catId;
+    public static String getCurUserCatName() {
+        return catName;
     }
 
-    public static void setCurUserCatId(String catId) {
-        MyApp.catId = catId;
+    public static void setCurUserCatName(String catName) {
+        MyApp.catName = catName;
     }
 
     public static String getCurTime() {

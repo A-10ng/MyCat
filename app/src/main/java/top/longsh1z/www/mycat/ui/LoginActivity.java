@@ -11,12 +11,14 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import java.io.IOException;
+import java.util.PrimitiveIterator;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -27,10 +29,12 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 import top.longsh1z.www.mycat.R;
+import top.longsh1z.www.mycat.utils.ActivityCollector;
 import top.longsh1z.www.mycat.utils.MyApp;
 
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener {
 
+    private long mExitTime;
     private TextInputLayout phoneNum;
     private TextInputLayout veri;
     private Button button;
@@ -42,67 +46,93 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+        ActivityCollector.addActivity(this);
         initView();
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        //判断用户是否点击了“返回键”
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            //与上次点击返回键时刻作差
+            if ((System.currentTimeMillis() - mExitTime) > 2000) {
+                //大于2000ms则认为是误操作，使用Toast进行提示
+                Toast.makeText(this, "再按一次退出程序", Toast.LENGTH_SHORT).show();
+                //并记录下本次点击“返回键”的时刻，以便下次进行判断
+                mExitTime = System.currentTimeMillis();
+            } else {
+                //小于2000ms则认为是用户确实希望退出程序-调用System.exit()方法进行退出
+                System.exit(0);
+            }
+            return true;
+        }
+        return super.onKeyDown(keyCode, event);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        ActivityCollector.removeActivity(this);
     }
 
     private void initView() {
         phoneNum = findViewById(R.id.phoneNum);
         veri = findViewById(R.id.Verification);
-        veri_button = (Button) findViewById(R.id.Veri_get);
+        veri_button = (Button) findViewById(R.id.veri_get);
         button = (Button) findViewById(R.id.login);
         veri_button.setOnClickListener(this);
         button.setOnClickListener(this);
 
-        //获取旧token，验证token是否正确
-        SharedPreferences sp = getSharedPreferences("token", Context.MODE_PRIVATE);
-        tokenold = sp.getString("token", null);
-        if (tokenold != null) {
-            //get 验证token是否正确
-            OkHttpClient mOkHttpClient = new OkHttpClient();
-            Request request = new Request.Builder()
-                    .url("http://120.78.219.119:8080/MyCatServer/tokenVerify")
-                    .addHeader("token", tokenold)
-                    .build();
-            Call call = mOkHttpClient.newCall(request);
-            call.enqueue(new Callback() {
-                @Override
-                public void onFailure(Call call, IOException e) {
-
-                }
-
-                @Override
-                public void onResponse(Call call, Response response) throws IOException {
-                    final String str = response.body().string();
-                    switch (str) {
-                        case "0": {  //token失效
-
-                            break;
-                        }
-                        case "1": {  //验证成功
-                            /**
-                             * 跳到主页面
-                             */
-                            SharedPreferences sharedPreferences = getSharedPreferences("token", MODE_PRIVATE);
-                            String phoneNum = sharedPreferences.getString("phoneNumber", null);
-                            MyApp.setCurUserPhone(phoneNum);
-                            finish();
-                            /**
-                             * 这里加一个进度条
-                             */
-                            Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                            startActivity(intent);
-                            break;
-                        }
-                        case "2": {  //token错误
-
-                            break;
-                        }
-                    }
-
-                }
-            });
-
-        }
+//        //获取旧token，验证token是否正确
+//        SharedPreferences sp = getSharedPreferences("token", Context.MODE_PRIVATE);
+//        tokenold = sp.getString("token", null);
+//        if (tokenold != null) {
+//            //get 验证token是否正确
+//            OkHttpClient mOkHttpClient = new OkHttpClient();
+//            Request request = new Request.Builder()
+//                    .url("http://120.78.219.119:8080/MyCatServer/tokenVerify")
+//                    .addHeader("token", tokenold)
+//                    .build();
+//            Call call = mOkHttpClient.newCall(request);
+//            call.enqueue(new Callback() {
+//                @Override
+//                public void onFailure(Call call, IOException e) {
+//
+//                }
+//
+//                @Override
+//                public void onResponse(Call call, Response response) throws IOException {
+//                    final String str = response.body().string();
+//                    switch (str) {
+//                        case "0": {  //token失效
+//
+//                            break;
+//                        }
+//                        case "1": {  //验证成功
+//                            /**
+//                             * 跳到主页面
+//                             */
+//                            SharedPreferences sharedPreferences = getSharedPreferences("token", MODE_PRIVATE);
+//                            String phoneNum = sharedPreferences.getString("phoneNumber", null);
+//                            MyApp.setCurUserPhone(phoneNum);
+//                            finish();
+//                            /**
+//                             * 这里加一个进度条
+//                             */
+//                            Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+//                            startActivity(intent);
+//                            break;
+//                        }
+//                        case "2": {  //token错误
+//
+//                            break;
+//                        }
+//                    }
+//
+//                }
+//            });
+//
+//        }
     }
 
     @Override
@@ -113,7 +143,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     submit(phoneNum.getEditText().getText().toString().trim(), veri.getEditText().getText().toString().trim());
                 }
                 break;
-            case R.id.Veri_get: //单击获取验证码按钮
+            case R.id.veri_get: //单击获取验证码按钮
                 if (phoneISTrue() == 1) {
                     getVeri(phoneNum.getEditText().getText().toString().trim());
                 }
@@ -158,6 +188,9 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             @Override
             public void onFailure(Call call, IOException e) {
                 Log.d("message", "failure");
+                Toast toast = Toast.makeText(LoginActivity.this, "登录失败~", Toast.LENGTH_SHORT);
+                toast.setGravity(Gravity.CENTER, 0, 0);
+                toast.show();
             }
 
             @Override

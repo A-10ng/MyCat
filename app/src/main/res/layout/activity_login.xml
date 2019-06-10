@@ -74,7 +74,7 @@
         </android.support.design.widget.TextInputLayout>
 
         <Button
-            android:id="@+id/Veri-get"
+            android:id="@+id/veri-get"
             style="?android:attr/borderlessButtonStyle"
             android:layout_width="wrap_content"
             android:layout_height="40dp"

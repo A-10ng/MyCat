@@ -15,6 +15,7 @@ import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -45,6 +46,7 @@ import top.longsh1z.www.mycat.bean.MyCatWorldBean;
 import top.longsh1z.www.mycat.customview.LimitScrollerView;
 import top.longsh1z.www.mycat.bean.CatFood;
 import top.longsh1z.www.mycat.bean.Check;
+import top.longsh1z.www.mycat.utils.ActivityCollector;
 import top.longsh1z.www.mycat.utils.CalendarUtils;
 import top.longsh1z.www.mycat.utils.HttpUtils;
 import top.longsh1z.www.mycat.utils.MyApp;
@@ -52,6 +54,7 @@ import top.longsh1z.www.mycat.utils.NetworkChangeReceiver;
 
 public class MainActivity extends AppCompatActivity {
 
+    private long mExitTime;
     private IntentFilter intentFilter;
     private NetworkChangeReceiver mNetworkChangeReceiver;
 
@@ -165,6 +168,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        ActivityCollector.addActivity(this);
 
         initNetworkChaneReceiver();
 
@@ -193,6 +197,25 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        //判断用户是否点击了“返回键”
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            //与上次点击返回键时刻作差
+            if ((System.currentTimeMillis() - mExitTime) > 2000) {
+                //大于2000ms则认为是误操作，使用Toast进行提示
+                Toast.makeText(this, "再按一次退出程序", Toast.LENGTH_SHORT).show();
+                //并记录下本次点击“返回键”的时刻，以便下次进行判断
+                mExitTime = System.currentTimeMillis();
+            } else {
+                //小于2000ms则认为是用户确实希望退出程序-调用System.exit()方法进行退出
+                System.exit(0);
+            }
+            return true;
+        }
+        return super.onKeyDown(keyCode, event);
+    }
+
     private void initNetworkChaneReceiver() {
         intentFilter = new IntentFilter();
         intentFilter.addAction("android.net.conn.CONNECTIVITY_CHANGE");
@@ -204,6 +227,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        ActivityCollector.removeActivity(this);
         unregisterReceiver(mNetworkChangeReceiver);
     }
 
@@ -228,27 +252,47 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void run() {
                 try {
+                    myCatWorldList.clear();
                     myCatWorldList = HttpUtils.getMyCatWorldData();
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
                             if (myCatWorldList.size() != 0 || myCatWorldList != null) {
-                                for (int i = 0; i < myCatWorldList.size(); i++) {
-                                    MyCatWorldBean dataBean = new MyCatWorldBean();
-                                    MyCatWorldBean bean = myCatWorldList.get(i);
-                                    dataBean.setNum((i + 1) + "");
-                                    dataBean.setUsername(bean.getUsername());
-                                    dataBean.setGender(bean.getGender() == 0 ?
-                                            R.drawable.female : R.drawable.male);
-                                    dataBean.setCatType(bean.getCatType());
-                                    Log.i(TAG, "run: " + bean.getCatType());
-                                    dataBean.setCatId(bean.getCatId());
-                                    dataBean.setCatLevel(bean.getCatLevel());
-                                    myCatWorldDataList.add(dataBean);
+                                if (myCatWorldList.size() > 0 && myCatWorldList.size()<=9){
+                                    Log.i(TAG, "myCatWorldList.size(): " + myCatWorldList.size());
+                                    for (int i = 0; i < myCatWorldList.size(); i++) {
+                                        MyCatWorldBean dataBean = new MyCatWorldBean();
+                                        MyCatWorldBean bean = myCatWorldList.get(i);
+                                        dataBean.setNum((i + 1) + "");
+                                        dataBean.setUsername(bean.getUsername());
+                                        dataBean.setGender(bean.getGender() == 0 ?
+                                                R.drawable.female : R.drawable.male);
+                                        dataBean.setCatType(bean.getCatType());
+                                        Log.i(TAG, "run: " + bean.getCatType());
+                                        dataBean.setCatId(bean.getCatId());
+                                        dataBean.setCatLevel(bean.getCatLevel()+"级");
+                                        myCatWorldDataList.add(dataBean);
+                                    }
+                                } else {
+                                    for (int i = 0; i < 9; i++) {
+                                        MyCatWorldBean dataBean = new MyCatWorldBean();
+                                        MyCatWorldBean bean = myCatWorldList.get(i);
+                                        dataBean.setNum((i + 1) + "");
+                                        dataBean.setUsername(bean.getUsername());
+                                        dataBean.setGender(bean.getGender() == 0 ?
+                                                R.drawable.female : R.drawable.male);
+                                        dataBean.setCatType(bean.getCatType());
+                                        Log.i(TAG, "run: " + bean.getCatType());
+                                        dataBean.setCatId(bean.getCatId());
+                                        dataBean.setCatLevel(bean.getCatLevel()+"级");
+                                        myCatWorldDataList.add(dataBean);
+                                    }
                                 }
-                                if (myCatWorldDataList.size() < 3){
+
+                                if (myCatWorldDataList.size()< 3){
                                     LimitScrollerView.setLimitNum(myCatWorldDataList.size());
                                 }
+
                                 myLimitScrollAdapter.setDatas(myCatWorldDataList, mLimitScrollerView);
                             } else {
                                 //因为数据库里肯定有数据，那我就偷个懒不写这种情况了
@@ -430,7 +474,7 @@ public class MainActivity extends AppCompatActivity {
         btn_setup.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                startActivity(new Intent(MainActivity.this, SettingsActivity.class));
             }
         });
 
@@ -654,6 +698,7 @@ public class MainActivity extends AppCompatActivity {
                                     });
                                     dialog.dismiss();
                                 } else {
+                                    Log.i(TAG, "run: isFinishFail:" + isFinishSuccess);
                                     Toast toast = Toast.makeText(MainActivity.this, "出现异常了！", Toast.LENGTH_SHORT);
                                     toast.setGravity(Gravity.CENTER, 0, 0);
                                     toast.show();

@@ -15,8 +15,10 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
+import top.longsh1z.www.mycat.bean.Cat;
 import top.longsh1z.www.mycat.bean.MyCatWorldBean;
 import top.longsh1z.www.mycat.bean.Check;
+import top.longsh1z.www.mycat.bean.User;
 
 public class HttpUtils {
 
@@ -161,6 +163,126 @@ public class HttpUtils {
             return false;
         }else {
             return true;
+        }
+    }
+
+//    public static List<User> getCurUser() throws IOException {
+//        RequestBody body = new FormBody.Builder()
+//                .add("phone",MyApp.getCurUserPhone())
+//                .build();
+//
+//        Request request = new Request.Builder()
+//                .post(body)
+//                .url(MyApp.SERVER_URL+"findUser")
+//                .build();
+//
+//        Response response = client.newCall(request).execute();
+//        String data = response.body().string();
+//        List<User> CurUser = getUserList(data, new TypeToken<List<User>>() {}.getType());
+//        return CurUser;
+//    }
+public static User getCurUser() throws IOException {
+    RequestBody body = new FormBody.Builder()
+            .add("phone",MyApp.getCurUserPhone())
+            .build();
+
+    Request request = new Request.Builder()
+            .post(body)
+            .url(MyApp.SERVER_URL+"findUser")
+            .build();
+
+    Response response = client.newCall(request).execute();
+    String data = response.body().string();
+    Gson gson = new Gson();
+    User CurUser = gson.fromJson(data,User.class);
+    return CurUser;
+}
+
+    private static List<User> getUserList(String data, Type type) {
+        Gson gson = new Gson();
+        return gson.fromJson(data, type);
+    }
+
+    public static List<Cat> getCurCat() throws IOException {
+        RequestBody body = new FormBody.Builder()
+                .add("catId",MyApp.getCatId())
+                .build();
+
+        Request request = new Request.Builder()
+                .post(body)
+                .url(MyApp.SERVER_URL+"findCat")
+                .build();
+
+        Response response = client.newCall(request).execute();
+        String data = response.body().string();
+        List<Cat> CurCat = getCatList(data, new TypeToken<List<Cat>>() {
+        }.getType());
+        return CurCat;
+    }
+
+    private static List<Cat> getCatList(String data, Type type) {
+        Gson gson = new Gson();
+        return gson.fromJson(data, type);
+    }
+
+    public static boolean updateUsername(String username) throws IOException {
+        Log.i(TAG, "username "+username);
+        Log.i(TAG, "phone "+MyApp.getCurUserPhone());
+        RequestBody body = new FormBody.Builder()
+                .add("phone",MyApp.getCurUserPhone())
+                .add("username",username)
+                .build();
+        Request request = new Request.Builder()
+                .post(body)
+                .url(MyApp.SERVER_URL+"updateUsername ")
+                .build();
+        Response response = client.newCall(request).execute();
+        String data = response.body().string().trim();
+        Log.i(TAG, "HttpUtils: response "+ data);
+        boolean res = Boolean.parseBoolean(data);
+        Log.i(TAG, "HttpUtils: res "+ res);
+        if (res == true){
+            return true;
+        }else {
+            return false;
+        }
+    }
+
+    public static boolean updateCatName(String catName) throws IOException {
+        RequestBody body = new FormBody.Builder()
+                .add("catId",MyApp.getCatId())
+                .add("catName",catName)
+                .build();
+        Request request = new Request.Builder()
+                .post(body)
+                .url(MyApp.SERVER_URL+"updateCatName")
+                .build();
+        Response response = client.newCall(request).execute();
+        String res = response.body().string().trim();
+        boolean result = Boolean.parseBoolean(res);
+        if (result == true){
+            return true;
+        }else {
+            return false;
+        }
+    }
+
+    public static boolean updateGender(String gender) throws IOException {
+        RequestBody body = new FormBody.Builder()
+                .add("phone",MyApp.getCurUserPhone())
+                .add("gender",gender)
+                .build();
+        Request request = new Request.Builder()
+                .post(body)
+                .url(MyApp.SERVER_URL+"updateUserGender")
+                .build();
+        Response response = client.newCall(request).execute();
+        String res = response.body().string().trim();
+        boolean result = Boolean.parseBoolean(res);
+        if (result == true){
+            return true;
+        }else {
+            return false;
         }
     }
 }
