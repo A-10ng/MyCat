@@ -6,8 +6,10 @@ import android.animation.ValueAnimator;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Looper;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -40,9 +42,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
+import pl.droidsonroids.gif.GifDrawable;
+import pl.droidsonroids.gif.GifImageView;
 import top.longsh1z.www.mycat.R;
 import top.longsh1z.www.mycat.adapter.MyLimitScrollAdapter;
+import top.longsh1z.www.mycat.bean.Cat;
 import top.longsh1z.www.mycat.bean.MyCatWorldBean;
+import top.longsh1z.www.mycat.bean.User;
 import top.longsh1z.www.mycat.customview.LimitScrollerView;
 import top.longsh1z.www.mycat.bean.CatFood;
 import top.longsh1z.www.mycat.bean.Check;
@@ -57,11 +63,18 @@ public class MainActivity extends AppCompatActivity {
     private long mExitTime;
     private IntentFilter intentFilter;
     private NetworkChangeReceiver mNetworkChangeReceiver;
+    private User CurUser;
 
     /**
      * 猫咪动画模块
      */
-    private TextView tv_username, tv_value;
+    private GifImageView gifImageView;
+    private Cat cat;
+    private int catAnimationFlag;//代表不同类型的动画
+    private int happyCat,boringCat,interactCat,getFoodCat;
+    private GifDrawable gifDrawable;
+    private TextView tv_level;
+    private TextView tv_catname, tv_value;
     private Button btn_statistics, btn_add, btn_setup;
     private RelativeLayout relativeLayout;
     private SmartRefreshLayout mSmartRefreshLayout;
@@ -167,6 +180,12 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        //沉浸式状态栏
+        if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.LOLLIPOP){
+            View decorView=getWindow().getDecorView();
+            decorView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN|View.SYSTEM_UI_FLAG_LAYOUT_STABLE);
+            getWindow().setStatusBarColor(Color.TRANSPARENT);
+        }
         setContentView(R.layout.activity_main);
         ActivityCollector.addActivity(this);
 
@@ -174,6 +193,9 @@ public class MainActivity extends AppCompatActivity {
 
         //初始化控件
         initViews();
+
+        //初始化猫动画
+        initCatInfo();
 
         setViewOnClickListeners();
 
@@ -192,6 +214,7 @@ public class MainActivity extends AppCompatActivity {
                 initCheckView();
                 initGrowthRecord();
                 initMyCatWorld();
+                initCatInfo();
                 mSmartRefreshLayout.finishRefresh();
             }
         });
@@ -436,13 +459,16 @@ public class MainActivity extends AppCompatActivity {
 
     private void initViews() {
         //猫咪动画模块
-        tv_username = findViewById(R.id.tv_username);
+        tv_catname = findViewById(R.id.tv_catname);
         tv_value = findViewById(R.id.tv_value);
         btn_statistics = findViewById(R.id.btn_statistics);
         btn_add = findViewById(R.id.btn_add);
         btn_setup = findViewById(R.id.btn_setup);
         relativeLayout = findViewById(R.id.RL);
         mSmartRefreshLayout = findViewById(R.id.refresh_layout);
+
+        tv_level = findViewById(R.id.level_tv);
+        gifImageView=findViewById(R.id.cat_anim_iv);
 
         //成长记录模块
         ll_growthRecord = findViewById(R.id.ll_growthRecord);
@@ -474,7 +500,8 @@ public class MainActivity extends AppCompatActivity {
         btn_setup.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(MainActivity.this, SettingsActivity.class));
+                Intent intent = new Intent(MainActivity.this, SettingsActivity.class);
+                startActivityForResult(intent,1);
             }
         });
 
@@ -485,6 +512,19 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(new Intent(MainActivity.this, MoreRecordActivity.class));
             }
         });
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        switch (requestCode){
+            case 1:
+                if (resultCode == RESULT_OK){
+                    String catName = data.getStringExtra("catName");
+                    Log.i(TAG, "onActivityResult: catName "+catName);
+                    tv_catname.setText(catName);
+                }
+                break;
+        }
     }
 
     public void initCheckView() {
@@ -560,7 +600,7 @@ public class MainActivity extends AppCompatActivity {
         manager.getDefaultDisplay().getMetrics(outMetrics);
         int width = outMetrics.widthPixels;
         float a = (float) ((int) width * 0.32);
-        float b = (float) ((int) width * 0.17);
+        float b = (float) ((int) width * 0.15);
         float c = (float) ((int) width * 0.47);
         float d = (float) ((int) width * 0.00);
         float e = (float) ((int) width * 0.62);
@@ -686,7 +726,6 @@ public class MainActivity extends AppCompatActivity {
                                 Log.i(TAG, "run: isFinishSuccess:" + isFinishSuccess);
                                 if (isFinishSuccess) {
                                     Toast toast = Toast.makeText(MainActivity.this, "打卡成功！", Toast.LENGTH_SHORT);
-                                    toast.setGravity(Gravity.CENTER, 0, 0);
                                     toast.show();
                                     checkViews.remove(position);
                                     runOnUiThread(new Runnable() {
@@ -694,8 +733,11 @@ public class MainActivity extends AppCompatActivity {
                                         public void run() {
                                             relativeLayout.removeView(catFoodView);
                                             initGrowthRecord();
+                                            //触发猫动画
+                                            catAnimationFlag = 2;
                                         }
                                     });
+                                    initCatInfo();
                                     dialog.dismiss();
                                 } else {
                                     Log.i(TAG, "run: isFinishFail:" + isFinishSuccess);
@@ -958,4 +1000,106 @@ public class MainActivity extends AppCompatActivity {
         dialog.getWindow().setBackgroundDrawableResource(R.color.transparent);
 //                dialog.getWindow().setDimAmount(0f);
     }
+
+    private void playCatAnimation() {
+        if (!(cat ==null)){
+            if (cat.getType()=="布偶猫" || cat.getType().equals("布偶猫")){
+                //获取布偶猫的动画ID
+                happyCat=R.drawable.pink_cat_happy;
+                boringCat=R.drawable.pink_cat_boring;
+                interactCat=R.drawable.pink_cat_interact;
+                getFoodCat=R.drawable.pink_cat_getfood;
+            }else {
+                happyCat=R.drawable.orange_cat_happy;
+                boringCat=R.drawable.orange_cat_boring;
+                interactCat=R.drawable.orange_cat_interact;
+                getFoodCat=R.drawable.orange_cat_getfood;
+            }
+        }
+
+        catAnimationFlag=0;
+        gifImageView = findViewById(R.id.cat_anim_iv);
+        gifImageView.setImageResource(happyCat);
+        gifDrawable = (GifDrawable) gifImageView.getDrawable();
+        gifDrawable.setSpeed(0.5f);
+        gifDrawable.setLoopCount(1);
+        gifDrawable.start();
+
+        gifImageView.setOnClickListener(v -> {
+            catAnimationFlag=1;
+        });
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                int i = 0;
+                while (true) {
+                    if(catAnimationFlag==3){
+                        playCertainAnimation(happyCat);
+                        catAnimationFlag=0;
+                        i=0;
+                    }
+                    if (catAnimationFlag==2){
+                        playCertainAnimation(getFoodCat);
+                        catAnimationFlag=0;
+                        i=0;
+                    }else if (catAnimationFlag==1) {
+                        catAnimationFlag= 0;
+                        playCertainAnimation(interactCat);
+                        i = 0;
+                    }else if (i >= 40&&catAnimationFlag==0) {
+                        playCertainAnimation(boringCat);
+                        i = 0;
+                    }
+                    try {
+                        Thread.sleep(200);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    i++;
+                }
+            }
+        }).start();
+    }
+    private void initCatInfo () {
+        new Thread(() -> {
+            try {
+                CurUser = HttpUtils.getCurUser();
+                MyApp.setCatId(CurUser.getCatId());
+                Log.i(TAG, "run: CatId"+CurUser.getCatId());
+                cat = HttpUtils.getCatInfo();
+                if (cat != null){
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            int valueForLevel = (int) (100 * Math.pow(2d, cat.getLevel()));
+                            tv_value.setText("成长值：" + cat.getValue() + "/" + valueForLevel);
+                            tv_level.setText(cat.getLevel()+"");
+                            tv_catname.setText(cat.getCatName());
+                            Log.i(TAG, "run: "+cat.getCatName() + "》》》"+cat.getLevel());
+                            playCatAnimation();
+                        }
+                    });
+                }
+            }catch (Exception e) {
+                e.printStackTrace();
+            }
+        }).start();
+    }
+
+    //播放特定的猫动画
+    private void playCertainAnimation(int gifId){
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                gifDrawable.recycle();
+                gifImageView.setImageResource(gifId);
+                gifDrawable = (GifDrawable) gifImageView.getDrawable();
+                gifDrawable.setSpeed(0.5f);
+                gifDrawable.setLoopCount(1);
+                gifDrawable.start();
+            }
+        });
+    }
+
 }

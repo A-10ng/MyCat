@@ -28,10 +28,7 @@ import java.util.Map;
 
 import top.longsh1z.www.mycat.R;
 
-/**
- * 自定义折线图
- * Created by xiaoyunfei on 16/11/29.
- */
+
 public class ChartView extends View {
     //xy坐标轴颜色
     private int xylinecolor = 0xffe2e2e2;

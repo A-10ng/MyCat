@@ -35,8 +35,9 @@
             android:layout_width="0dp"
             android:layout_height="140dp"
             android:layout_marginLeft="40dp"
+            android:layout_gravity="center_vertical"
             android:layout_weight="1"
-            android:src="@drawable/coming"/>
+            android:src="@drawable/buoumao"/>
 
 
         <pl.droidsonroids.gif.GifImageView

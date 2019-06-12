@@ -285,4 +285,22 @@ public static User getCurUser() throws IOException {
             return false;
         }
     }
+
+    public static Cat getCatInfo(){
+        Request request = new Request.Builder()
+                .url(MyApp.SERVER_URL+"findCat?catId=" +MyApp.getCatId())
+                .build();
+        Log.i(TAG, "getCatInfo: CatId"+MyApp.getCatId());
+        try {
+            Response response = client.newCall(request).execute();
+            String catString = response.body().string();
+            Gson gson=new Gson();
+            Cat cat=gson.fromJson(catString,Cat.class);
+            return cat;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
 }

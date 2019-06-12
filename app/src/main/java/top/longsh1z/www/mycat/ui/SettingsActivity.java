@@ -1,6 +1,8 @@
 package top.longsh1z.www.mycat.ui;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Looper;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -104,6 +106,12 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
                 break;
             case R.id.btn_exit:
                 ActivityCollector.finishAllActivity();
+                //获取token并保存本地
+                SharedPreferences sp = getSharedPreferences("token", Context.MODE_PRIVATE);
+                sp.edit()
+                        .putString("token", null)
+                        .putString("phoneNumber", null)
+                        .apply();
                 startActivity(new Intent(SettingsActivity.this,LoginActivity.class));
                 break;
             case R.id.rl_changeUsername:
@@ -257,6 +265,10 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
                                         boolean res = HttpUtils.updateCatName(catName);
                                         Log.i("SettingsActivity", "res"+res);
                                         if (res == true){
+                                            Intent intent = new Intent();
+                                            intent.putExtra("catName",catName);
+                                            setResult(RESULT_OK,intent);
+
                                             Toast toast = Toast.makeText(SettingsActivity.this, "修改成功！", Toast.LENGTH_SHORT);
                                             toast.setGravity(Gravity.CENTER, 0, 0);
                                             toast.show();

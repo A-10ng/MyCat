@@ -8,10 +8,7 @@ import android.view.View;
 import com.haibin.calendarview.Calendar;
 import com.haibin.calendarview.MonthView;
 
-/**
- * 高仿魅族日历布局
- * Created by huanghaibin on 2017/11/15.
- */
+
 
 public class ColorfulMonthView extends MonthView {
 

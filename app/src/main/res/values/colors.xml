@@ -151,4 +151,5 @@
     <color name="gray_cc">#cccccc</color><!--灰色cc -->
     <color name="gray_8f">#8f8f8f</color><!--灰色8f -->
     <color name="background">#9b414141</color>
+    <color name="catName">#FFF6989E</color>
 </resources>

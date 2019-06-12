@@ -21,14 +21,22 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@drawable/main_bg"
+            android:background="@drawable/main_bg_1"
+            android:fitsSystemWindows="true"
             android:orientation="vertical">
 
             <RelativeLayout
                 android:id="@+id/RL"
                 android:layout_width="match_parent"
-                android:layout_height="520dp"
-                android:orientation="vertical">
+                android:layout_height="520dp">
+
+                <pl.droidsonroids.gif.GifImageView
+                    android:id="@+id/cat_anim_iv"
+                    android:layout_width="200dp"
+                    android:layout_height="200dp"
+                    android:layout_above="@+id/btn_setup"
+                    android:layout_centerInParent="true"
+                    android:layout_marginBottom="30dp"/>
 
                 <TextView
                     android:id="@+id/tv_value"
@@ -42,20 +50,37 @@
                     android:paddingTop="10dp"
                     android:paddingRight="20dp"
                     android:paddingBottom="10dp"
+                    android:textColor="@color/hotpink"
                     android:text="成长值： 350/1500"/>
 
+                <!--<TextView-->
+                    <!--android:id="@+id/tv_catname"-->
+                    <!--android:layout_width="wrap_content"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:layout_alignBaseline="@+id/tv_value"-->
+                    <!--android:layout_alignBottom="@+id/tv_value"-->
+                    <!--android:layout_alignParentStart="true"-->
+                    <!--android:layout_marginLeft="30dp"-->
+                    <!--android:layout_marginTop="20dp"-->
+                    <!--android:text="LongSh1z的猫"-->
+                    <!--android:textSize="14sp"-->
+                    <!--android:textStyle="normal|bold"/>-->
+
                 <TextView
-                    android:id="@+id/tv_username"
+                    android:id="@+id/tv_catname"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignBaseline="@+id/tv_value"
-                    android:layout_alignBottom="@+id/tv_value"
-                    android:layout_alignParentStart="true"
-                    android:layout_marginLeft="30dp"
+                    android:layout_below="@+id/tv_value"
+                    android:layout_alignParentRight="true"
+                    android:background="@drawable/style_value_background"
+                    android:paddingLeft="20dp"
+                    android:paddingTop="10dp"
+                    android:paddingRight="18dp"
+                    android:paddingBottom="10dp"
                     android:layout_marginTop="20dp"
                     android:text="LongSh1z的猫"
-                    android:textSize="14sp"
-                    android:textStyle="normal|bold"/>
+                    android:textColor="@color/hotpink"
+                    android:textSize="14sp"/>
 
                 <Button
                     android:id="@+id/btn_setup"
@@ -86,6 +111,35 @@
                     android:layout_marginEnd="19dp"
                     android:layout_marginBottom="10dp"
                     android:background="@drawable/statistics"/>
+
+                <!--<TextView-->
+                    <!--android:id="@+id/level_tv"-->
+                    <!--android:layout_width="40dp"-->
+                    <!--android:layout_height="40dp"-->
+                    <!--android:layout_toLeftOf="@+id/tv_value"-->
+                    <!--android:layout_alignBottom="@+id/tv_value"-->
+                    <!--android:background="@drawable/heart"-->
+                    <!--android:gravity="center"-->
+                    <!--android:layout_marginRight="10dp"-->
+                    <!--android:text="20"-->
+                    <!--android:textColor="@color/white"-->
+                    <!--android:textStyle="bold"-->
+                    <!--android:textSize="12sp"/>-->
+
+                <TextView
+                    android:id="@+id/level_tv"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_below="@+id/tv_catname"
+                    android:background="@drawable/heart"
+                    android:gravity="center"
+                    android:layout_marginTop="15dp"
+                    android:layout_alignParentRight="true"
+                    android:text="20"
+                    android:textColor="@color/white"
+                    android:layout_marginRight="8dp"
+                    android:textStyle="bold"
+                    android:textSize="12sp"/>
             </RelativeLayout>
 
             <LinearLayout

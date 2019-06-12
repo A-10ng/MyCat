@@ -15,16 +15,7 @@ import android.widget.LinearLayout;
 
 import top.longsh1z.www.mycat.R;
 
-/**
- * author : openXu
- * create at : 2016/11/22 10:14
- * blog : http://blog.csdn.net/xmxkf
- * gitHub : https://github.com/openXu
- * project : LimitScrollerView
- * class name : LimitScrollerView
- * version : 1.0
- * class describe：
- */
+
 public class LimitScrollerView extends LinearLayout implements View.OnClickListener{
 
     private String TAG = "LimitScrollerView";
